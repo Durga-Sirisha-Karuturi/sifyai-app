@@ -57,7 +57,7 @@ spec:
       serviceAccountName: deployer-sa
       containers:
       - name: backend-code
-        image: harbor.sifyai.com/sifyai/backend:dev
+        image: sirishakaruturi/notebooks-backend:dev
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
