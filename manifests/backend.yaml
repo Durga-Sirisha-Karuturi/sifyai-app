@@ -85,11 +85,14 @@ metadata:
   name: backend-ingress
   namespace: default
   annotations:
-    cert-manager.io/cluster-issuer: selfsigned-clusterissuer  # Ensure cert-manager is installed
+    cert-manager.io/cluster-issuer: selfsigned-clusterissuer
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
 spec:
   ingressClassName: nginx
   rules:
-  - host: backend.sify.com
+  - host: backend-notebooks.sifyai.com
     http:
       paths:
       - path: /
@@ -101,5 +104,5 @@ spec:
               number: 5000
   tls:
   - hosts:
-    - backend.sify.com
+    - backend-notebooks.sifyai.com
     secretName: backend-tls-secret
