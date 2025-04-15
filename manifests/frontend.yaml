@@ -1,108 +1,64 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: deployer-sa
-  namespace: default  # Change this if needed
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: deployer-clusterrole
-  namespace: default
-rules:
-  - apiGroups: [""]
-    resources: ["namespaces"]
-    verbs: ["create", "get", "list", "watch","delete"]
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    verbs: ["create", "get", "list", "watch","delete"]
-  - apiGroups: [""]
-    resources: ["services", "persistentvolumeclaims", "persistentvolumes", "configmaps", "secrets","pods"]
-    verbs: ["create", "get", "list", "watch","delete"]
-  - apiGroups: ["networking.k8s.io"]
-    resources: ["ingresses"]
-    verbs: ["create", "get", "list", "watch","delete"]
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: deployer-clusterrolebinding
-  namespace: default
-subjects:
-  - kind: ServiceAccount
-    name: deployer-sa
-    namespace: default
-roleRef:
-  kind: ClusterRole
-  name: deployer-clusterrole
-  apiGroup: rbac.authorization.k8s.io
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: react-deployment
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend-code
+      app: react
   template:
     metadata:
       labels:
-        app: backend-code
+        app: react
     spec:
-      serviceAccountName: deployer-sa
       containers:
-      - name: backend-code
-        image: harbor.sifyai.com/sifyai/notebooks-backend:dev
+      - name: react
+        image: harbor.sifyai.com/sifyai/sifyai-frontend:dev
         imagePullPolicy: Always
         ports:
-        - containerPort: 5000
+        - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: react-service
   namespace: default
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    app: backend-code
+    app: react
   ports:
   - protocol: TCP
-    port: 5000
-    targetPort: 5000
-    nodePort: 30601
-
+    port: 80
+    targetPort: 3000
 ---
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: backend-ingress
-  namespace: default
   annotations:
     cert-manager.io/cluster-issuer: selfsigned-clusterissuer
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+  name: react-ingress
+  namespace: default
 spec:
   ingressClassName: nginx
   rules:
-  - host: backend-notebooks.sifyai.com
+  - host: platform.sifyai.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: backend-service
+            name: react-service
             port:
-              number: 5000
+              number: 80
   tls:
   - hosts:
-    - backend-notebooks.sifyai.com
-    secretName: backend-tls-secret
+    - platform.sifyai.com
+    secretName: platform-sifyai-com-tls
+
