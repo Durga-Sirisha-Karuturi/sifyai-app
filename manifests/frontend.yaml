@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: react
-        image: sirishakaruturi/sifyai-frontend:dev
+        image: harbor.sifyai.com/sifyai/sifyai-frontend:dev
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
@@ -39,9 +39,9 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: selfsigned-clusterissuer
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
   name: react-ingress
   namespace: default
 spec:
@@ -61,3 +61,4 @@ spec:
   - hosts:
     - platform.sifyai.com
     secretName: platform-sifyai-com-tls
+
