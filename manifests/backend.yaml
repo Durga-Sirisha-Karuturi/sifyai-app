@@ -57,7 +57,7 @@ spec:
       serviceAccountName: deployer-sa
       containers:
       - name: backend-code
-        image: sirishakaruturi/notebooks-backend:dev
+        image: harbor.sifyai.com/sifyai/notebooks-backend:dev
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
@@ -86,9 +86,9 @@ metadata:
   namespace: default
   annotations:
     cert-manager.io/cluster-issuer: selfsigned-clusterissuer
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
 spec:
   ingressClassName: nginx
   rules:
