@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: react
-        image: harbor.sifyai.com/sifyai/sifyai-frontend:dev
+        image: sirishakaruturi/sifyai-frontend:dev
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
